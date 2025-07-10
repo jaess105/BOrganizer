@@ -1,0 +1,95 @@
+@page "{BusinessId:long?}"
+@model BOrganizer.Pages.Pages.Businesses.BusinessCreation
+
+@{
+    ViewData["Title"] = "Business Creation";
+}
+
+<h1 class="mb-4">@(Model.Business?.Id is null ? "Create Business" : "Edit Business")</h1>
+
+<form method="post" class="needs-validation" novalidate>
+    <input type="hidden" asp-for="Business.Id" />
+
+    <fieldset class="mb-4">
+        <legend class="h5">Business Info</legend>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label asp-for="Business.Name" class="form-label">Name</label>
+                <input asp-for="Business.Name" class="form-control" required />
+                <span asp-validation-for="Business.Name" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="Business.Steuernummer" class="form-label">Steuernummer</label>
+                <input asp-for="Business.Steuernummer" type="text" class="form-control" />
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="Business.Street" class="form-label">Street</label>
+                <input asp-for="Business.Street" class="form-control" required />
+                <span asp-validation-for="Business.Street" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-2">
+                <label asp-for="Business.Number" class="form-label">Number</label>
+                <input asp-for="Business.Number" class="form-control" required />
+                <span asp-validation-for="Business.Number" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-4">
+                <label asp-for="Business.Country" class="form-label">Country</label>
+                <input asp-for="Business.Country" class="form-control" />
+            </div>
+
+            <div class="col-md-3">
+                <label asp-for="Business.Plz" class="form-label">PLZ</label>
+                <input asp-for="Business.Plz" class="form-control" required />
+                <span asp-validation-for="Business.Plz" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-5">
+                <label asp-for="Business.Ort" class="form-label">Ort</label>
+                <input asp-for="Business.Ort" class="form-control" required />
+                <span asp-validation-for="Business.Ort" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="Business.Tel" class="form-label">Tel</label>
+                <input asp-for="Business.Tel" class="form-control" />
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="Business.EMail" class="form-label">Email</label>
+                <input asp-for="Business.EMail" type="email" class="form-control" />
+            </div>
+        </div>
+    </fieldset>
+
+    <fieldset class="mb-4">
+        <legend class="h5">Contact Person (optional)</legend>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label asp-for="FirstName" class="form-label">First Name</label>
+                <input asp-for="FirstName" class="form-control" />
+            </div>
+            <div class="col-md-6">
+                <label asp-for="LastName" class="form-label">Last Name</label>
+                <input asp-for="LastName" class="form-control" />
+            </div>
+        </div>
+    </fieldset>
+
+    <fieldset class="mb-4">
+        <legend class="h5">Your Business</legend>
+        <div class="form-check">
+            <input asp-for="IsUsersBusiness" class="form-check-input" type="checkbox" />
+            <label asp-for="IsUsersBusiness" class="form-check-label">
+                Is this your business? Makes this business your new primary business.
+            </label>
+        </div>
+    </fieldset>
+
+    <button type="submit" class="btn btn-success">
+        @(Model.Business?.Id is null ? "Create" : "Save Changes")
+    </button>
+</form>

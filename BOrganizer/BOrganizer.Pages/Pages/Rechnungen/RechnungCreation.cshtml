@@ -1,0 +1,197 @@
+@page
+@using Extensions.Core
+@using global::Rechnungen.Model.General
+@using global::Rechnungen.Model.Invoices
+@model BOrganizer.Pages.Pages.Rechnungen.RechnungCreation
+
+@{
+    ViewData["Title"] = "Rechnungs Creation";
+}
+
+<form method="post">
+    <partial name="_ValidationScriptsPartial"/>
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <input class="form-control" asp-for="InvoiceId" hidden="hidden"/>
+
+    @if (Model.RechnungsNummer is not null)
+    {
+        <div class="mb-3">
+            <label class="form-label">Rechnungs Id</label>
+            <input class="form-control" asp-for="RechnungsNummer" readonly="readonly"/>
+        </div>
+    }
+
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <div class="border rounded p-3">
+                <label for="RechnungsSteller" class="form-label">Rechnungssteller</label>
+                <select class="form-select"
+                        asp-for="RechnungsStellerId"
+                        asp-items="@(new SelectList(Model.BusinessOptions, nameof(Business.Id), nameof(Business.Name)))">
+                </select>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="border rounded p-3">
+                <label for="RechnungsEmpfaenger" class="form-label">Rechnungsempfänger</label>
+                <select class="form-select"
+                        asp-for="RechnungsEmpfaengerId"
+                        asp-items="@(new SelectList(Model.BusinessOptions, nameof(Business.Id), nameof(Business.Name)))">
+                </select>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="mb-3">
+        <label class="form-label">Steuersatz</label>
+
+        <div class="input-group">
+            <select id="steuersatz-select"
+                    class="form-select"
+                    asp-for="SteuersatzId"
+                    asp-items="@(new SelectList(Model.SteuersatzOptions, nameof(InvoiceSteuersatz.Id), nameof(InvoiceSteuersatz.SteuerSatz)))">
+            </select>
+
+            <span class="input-group-text" id="steuersatz-in-prz">
+                MwSt: @InvoiceSteuersatz.ById(Model.SteuersatzId.Value).InProzent %
+            </span>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Zahlungskonto</label>
+        <select class="form-select"
+                asp-for="CreditId"
+                asp-items="@(new SelectList(Model.CreditOptions, nameof(Credit.Id), nameof(Credit.Short)))">
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Rechnungsdatum</label>
+        <input class="form-control" asp-for="RechnungsDatum" type="date"/>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Lieferdatum</label>
+        <input class="form-control" asp-for="LieferDatum" type="date"/>
+    </div>
+
+    <!-- Add inputs for invoice items as needed -->
+
+    <button type="submit" class="btn btn-primary mb-4">
+        @if (Model.InvoiceId is null) { <span>Rechnung erstellen</span> }
+        else { <span>Änderungen speichern</span> }
+    </button>
+
+
+    <h4>Invoice Items</h4>
+    <table class="table" id="invoice-items">
+        <thead>
+        <tr>
+            <th>Bezeichnung</th>
+            <th>Anzahl</th>
+            <th>Einzelpreis</th>
+            <th>Inkl. MwSt</th>
+        </tr>
+        </thead>
+        <tbody id="invoice-items-body">
+        @foreach ((int i, Invoice.InvoiceItem item) in Model.InvoiceItems.Enumerate()) { @Html.Partial("_InvoiceItemTableRow", (i.ToString(), item)) }
+        </tbody>
+
+    </table>
+
+    <button type="button" class="btn btn-secondary" onclick="invoiceItemsControl.addInvoiceItem()">+ Item</button>
+
+</form>
+
+
+<template id="invoice-item-template">
+    @Html.Partial("_InvoiceItemTableRow", ("#", new Invoice.InvoiceItem("", 1, 0M)))
+</template>
+
+
+
+@section Scripts {
+    <script>
+        const currentMwst = {
+            mwstMap: {
+                @foreach ((int i, InvoiceSteuersatz val) in InvoiceSteuersatz.Steuersaetze.Enumerate()) { @($"{i}: {val.InProzent},") }
+            },
+            selectedMwst: 0,
+            getMwst() {
+                return this.mwstMap[this.selectedMwst];
+            },
+            setMwstSet(idx) {
+                this.mwstMap[idx];
+            }
+        };
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const select = document.getElementById("steuersatz-select");
+            const display = document.getElementById("steuersatz-in-prz");
+
+            select.addEventListener("change", function () {
+                currentMwst.setMwstSet(select.options.selectedIndex);
+                const mwst = currentMwst.getMwst();
+                display.textContent = `MwSt: ${mwst} %`;
+            });
+        });
+
+        function updateMwstPrice(
+            /* String */ unitPriceId,
+            /* String */ mwstPriceId,
+        ) {
+            const mwstRate = (/*number*/ value) => 1 + currentMwst.getMwst();
+            const roundTo2Decimals = (num) => Math.round(num * 100) / 100;
+            const nettoToBrutto = (netto) => {
+                netto = parseInt(netto);
+                return roundTo2Decimals(netto * mwstRate(netto));
+            }
+            const bruttoToNetto = (brutto) => {
+                brutto = parseInt(brutto);
+                return roundTo2Decimals(brutto / mwstRate(brutto));
+            }
+
+            document.getElementById(mwstPriceId).value = nettoToBrutto(
+                document.getElementById(unitPriceId).value
+            );
+
+            document.getElementById(unitPriceId).addEventListener('input', function () {
+                document.getElementById(mwstPriceId).value = nettoToBrutto(this.value)
+            });
+            document.getElementById(mwstPriceId).addEventListener('input', function () {
+                document.getElementById(unitPriceId).value = bruttoToNetto(this.value);
+            });
+        }
+    </script>
+
+    <script>
+        let invoiceItemsControl = {
+            itemIndex: @Model.InvoiceItems.Count,
+            addInvoiceItem() {
+                const template = document.getElementById("invoice-item-template");
+                const tbody = document.getElementById("invoice-items-body");
+                const clone = template.content.cloneNode(true);
+
+                // Replace placeholders with correct index
+                clone.querySelectorAll("input").forEach(input => {
+                    input.name = input.name.replace("#", this.itemIndex);
+                    input.id = input.id.replace("#", this.itemIndex);
+                });
+
+                tbody.appendChild(clone);
+                const unitPriceId = `InvoiceItems[${this.itemIndex}].UnitPrice`;
+                const priceMwstId = `InvoiceItems[${this.itemIndex}].PriceMwst`;
+                updateMwstPrice(
+                    unitPriceId,
+                    priceMwstId);
+
+                this.itemIndex++;
+            },
+        }
+    </script>
+}
+
+

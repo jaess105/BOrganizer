@@ -1,0 +1,58 @@
+@using global::Rechnungen.Model.Invoices
+
+@model (string Index, Invoice.InvoiceItem Item)
+
+@{
+    string Index = Model.Index;
+    Invoice.InvoiceItem Item = Model.Item;
+
+    var unitPriceId = $"InvoiceItems[{Index}].UnitPrice";
+    var mwstPriceId = $"InvoiceItems[{Index}].PriceMwst";
+}
+
+<tr>
+    <td>
+        <input class="form-control"
+               name="InvoiceItems[@Index].Beschreibung"
+               value="@Item.Beschreibung"/>
+    </td>
+    <td>
+        <input class="form-control"
+               type="number"
+               step="1"
+               name="InvoiceItems[@Index].Quantity"
+               value="@Item.Quantity"/>
+    </td>
+    <td>
+        <input class="form-control"
+               type="number"
+               step="0.01"
+               id="@unitPriceId"
+               name="@unitPriceId"
+               value="@Item.UnitPrice"/>
+    </td>
+    <td>
+        <input class="form-control"
+               type="number"
+               step="0.01"
+               id="@mwstPriceId"
+               name="@mwstPriceId"
+        />
+    </td>
+    <td>
+        <button type="button" class="btn btn-danger btn-sm"
+                onclick="removeInvoiceItem(this)">
+            ×
+        </button>
+    </td>
+</tr>
+
+<script>
+    function removeInvoiceItem(button) {
+        button.closest("tr").remove();
+    }
+
+    addEventListener("DOMContentLoaded", (_) => {
+        updateMwstPrice("@unitPriceId", "@mwstPriceId");
+    })
+</script>

@@ -1,0 +1,12 @@
+@page "{invoiceId:long}"
+@model BOrganizer.Pages.Pages.Rechnungen.PdfView
+
+@{
+    ViewData["Title"] = "PDF view";
+}
+
+<h2>Invoice PDF</h2>
+
+<iframe
+    src="@Url.Action("OnPostDownload", "RechnungCreation", new { invoiceId = Model.InvoiceId })"
+    width="100%" height="600px"></iframe>

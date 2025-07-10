@@ -1,0 +1,52 @@
+@page
+@using global::Rechnungen.Model.General
+@model BOrganizer.Pages.Pages.Businesses.BusinessesOverview
+
+@{
+    ViewData["Title"] = "Businesses Overview";
+}
+
+<h1 class="mb-4">All Businesses</h1>
+
+<a class="btn btn-link me-3" asp-area="" asp-page="/Businesses/BusinessCreation">Create a business</a>
+
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    @foreach (Business business in Model.Businesses)
+    {
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">@business.Name</h5>
+                    <p class="card-text mb-2">
+                        @business.Street @business.Number<br/>
+                        @business.Plz @business.Ort<br/>
+                        @if (!string.IsNullOrWhiteSpace(business.Country))
+                        {
+                            @business.Country<br/>
+                        }
+                    </p>
+
+                    @if (!string.IsNullOrWhiteSpace(business.Tel))
+                    {
+                        <p class="card-text"><strong>Tel:</strong> @business.Tel</p>
+                    }
+
+                    @if (!string.IsNullOrWhiteSpace(business.EMail))
+                    {
+                        <p class="card-text">
+                            <strong>Email:</strong> <a href="mailto:@business.EMail">@business.EMail</a>
+                        </p>
+                    }
+
+                    @if (!string.IsNullOrWhiteSpace(business.Steuernummer))
+                    {
+                        <p class="card-text"><strong>Steuernummer:</strong> @business.Steuernummer</p>
+                    }
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <a asp-page="/Businesses/BusinessCreation" asp-route-BusinessId="@business.Id">Edit</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>

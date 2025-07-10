@@ -1,0 +1,36 @@
+@page
+@model BOrganizer.Pages.Pages.Businesses.CreditCreation
+@{
+    ViewData["Title"] = "Kreditverbindung erstellen";
+}
+
+<div class="container mt-5">
+    <h2>Kreditverbindung erstellen</h2>
+    <form method="post" class="mt-4">
+        <div class="mb-3">
+            <label asp-for="Institute" class="form-label">Institut</label>
+            <input asp-for="Institute" class="form-control"/>
+            <span asp-validation-for="Institute" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="IBAN" class="form-label">IBAN</label>
+            <input asp-for="IBAN" class="form-control"/>
+            <span asp-validation-for="IBAN" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="BIC" class="form-label">BIC</label>
+            <input asp-for="BIC" class="form-control"/>
+            <span asp-validation-for="BIC" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Inhaber" class="form-label">Kontoinhaber</label>
+            <input asp-for="Inhaber" class="form-control"/>
+            <span asp-validation-for="Inhaber" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Speichern</button>
+    </form>
+</div>
