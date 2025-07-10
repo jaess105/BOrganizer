@@ -1,0 +1,3 @@
+[submodule "ExtensionsSln"]
+	path = ExtensionsSln
+	url = git@github.com:jaess105/DotnetExtensions.git
