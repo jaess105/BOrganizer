@@ -1,0 +1,48 @@
+﻿services:
+  dbinit:
+    build:
+      context: .
+      dockerfile: BOrganizer/DB.Init/Dockerfile
+    depends_on:
+      - db
+
+  borgainzerpages:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    build:
+      context: .
+      dockerfile: BOrganizer/BOrganizer.Pages/Dockerfile
+    depends_on:
+      - db
+      - dbinit
+    ports:
+      - 5030:8080
+    volumes:
+      - ./appsettings.Development.json:/app/appsettings.Development.json
+
+
+  db:
+    image: postgres:latest
+    container_name: business_db 
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    ports:
+      - "${PGADMIN_PORT}:80"
+    depends_on:
+      - db
+
+volumes:
+  postgres-data:
