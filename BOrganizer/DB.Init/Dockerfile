@@ -5,10 +5,10 @@ WORKDIR /app
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["DB.Init/DB.Init.fsproj", "DB.Init/"]
-RUN dotnet restore "DB.Init/DB.Init.fsproj"
+COPY ["BOrganizer/DB.Init/DB.Init.fsproj", "BOrganizer/DB.Init/"]
+RUN dotnet restore "BOrganizer/DB.Init/DB.Init.fsproj"
 COPY . .
-WORKDIR "/src/DB.Init"
+WORKDIR "/src/BOrganizer/DB.Init"
 RUN dotnet build "./DB.Init.fsproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
