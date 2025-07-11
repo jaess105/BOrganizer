@@ -1,8 +1,8 @@
-import { Head, Link } from '@inertiajs/react';
-import type { BreadcrumbItem } from '@/types';
+import {Head, Link} from '@inertiajs/react';
+import type {BreadcrumbItem} from '@/types';
 import AppLayout from '@/layouts/app-layout';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import {Card, CardContent, CardHeader} from '@/components/ui/card';
+import {Button} from '@/components/ui/button';
 
 type Business = {
     name: string;
@@ -29,10 +29,10 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function App({ primaryBusiness, invoices }: Props) {
+export default function App({primaryBusiness, invoices}: Props) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Dashboard" />
+            <Head title="Dashboard"/>
 
             <div className="flex flex-1 flex-col gap-8 p-8 bg-background min-h-screen">
                 <header className="space-y-2">
@@ -52,7 +52,7 @@ export default function App({ primaryBusiness, invoices }: Props) {
                         <Link href="/Businesses/Credit/Create">Create a credit</Link>
                     </Button>
                     <Button asChild variant="secondary" size="lg">
-                        <Link href="/Rechnungen/RechnungCreation">Create Rechnung</Link>
+                        <Link href="/Rechnungen/Create">Create Rechnung</Link>
                     </Button>
                 </div>
 
@@ -90,7 +90,7 @@ export default function App({ primaryBusiness, invoices }: Props) {
                                     </p>
                                     <div className="mt-4 flex flex-col gap-2">
                                         <Button asChild variant="outline" size="sm">
-                                            <Link href={`/Rechnungen/RechnungCreation?InvoiceId=${invoice.id}`}>
+                                            <Link href={`/Rechnungen/Create?invoiceId=${invoice.id}`}>
                                                 Edit
                                             </Link>
                                         </Button>
