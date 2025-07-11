@@ -83,17 +83,6 @@ public class BusinessDao(
             }
             else { businessId = await conn.InsertAsync<BusinessDto, long>(businessDto, transaction: tx); }
 
-
-            if (personId is { } personIdLong)
-            {
-                await conn.InsertAsync(new
-                    PersonBusiness
-                    {
-                        person_id = personIdLong,
-                        business_id = businessId
-                    }, transaction: tx);
-            }
-
             tx.Commit();
 
             return business;
