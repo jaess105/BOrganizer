@@ -65,12 +65,14 @@ public class RechnungsController(
         IEnumerable<Invoice.InvoiceItem> invoiceItems =
             dto.InvoiceItems.Select(i => new Invoice.InvoiceItem(i.Beschreibung, i.Quantity, i.UnitPrice));
 
+
+        Invoice invoice;
         if (dto.InvoiceId is null)
         {
             RechnungsNummer rechnungsnummer = await rechnungsService.NextRechnungsNummer(
                 "PzE", DateTime.Now.Year.ToString());
 
-            var invoice = new Invoice(
+            invoice = new Invoice(
                 rechnungsSteller,
                 rechnungsEmpfaenger,
                 rechnungsDatum,
@@ -82,13 +84,13 @@ public class RechnungsController(
                 [..invoiceItems],
                 creditInfo) { Id = null };
 
-            await rechnungsService.CreateInvoiceAsync(invoice);
+            invoice = await rechnungsService.CreateInvoiceAsync(invoice);
         }
         else
         {
             if (!await rechnungsService.InvoiceExistsAsync(dto.InvoiceId.Value)) { return NotFound(); }
 
-            await rechnungsService.UpdateInvoiceAsync(
+            invoice = await rechnungsService.UpdateInvoiceAsync(
                 dto.InvoiceId.Value,
                 rechnungsSteller,
                 rechnungsEmpfaenger,
@@ -100,7 +102,18 @@ public class RechnungsController(
         }
 
 
-        return RedirectToAction(nameof(CreateGet));
+        return RedirectToAction(nameof(CreateGet), new { invoiceId = invoice.Id.Value });
+    }
+
+    [HttpGet("Pdf/View")]
+    public async Task<IActionResult> PdfViewGet(long invoiceId)
+    {
+        Invoice? invoice = await rechnungsService.GetInvoiceByIdAsync(invoiceId);
+        if (invoice is null) { return NotFound(); }
+
+        return InertiaCore.Inertia.Render(
+            "Rechnungen/RechnungPdfView",
+            new { invoice });
     }
 }
 
