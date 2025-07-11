@@ -40,12 +40,13 @@ type FormData = {
     isUsersBusiness: boolean;
 };
 
-export default function BusinessFormPage({
-                                             business,
-                                             firstName,
-                                             lastName,
-                                             isUsersBusiness
-                                         }: Props) {
+export default function BusinessFormPage(
+    {
+        business,
+        firstName,
+        lastName,
+        isUsersBusiness
+    }: Props) {
     const [showSuccessModal, setShowSuccessModal] = useState(false);
 
     const {data, setData, post, processing, errors, transform} = useForm<FormData>({

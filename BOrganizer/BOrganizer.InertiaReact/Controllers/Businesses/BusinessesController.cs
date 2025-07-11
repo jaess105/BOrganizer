@@ -15,9 +15,16 @@ public class BusinessesController(IBusinessService businessService) : Controller
             ? await businessService.GetBusinessByIdAsync(businessId.Value)
             : null;
 
-        var form = business?.ToBusinessForm();
 
-        return InertiaCore.Inertia.Render("Businesses/BusinessForm", form);
+        return InertiaCore.Inertia.Render(
+            "Businesses/BusinessForm",
+            new
+            {
+                business,
+                firstName = business?.Person?.FirstName,
+                lastName = business?.Person?.LastName,
+                isUsersBusiness = await businessService.IsPrimaryBusinessAsync(business?.Id),
+            });
     }
 
     [HttpPost("")]
@@ -34,7 +41,7 @@ public class BusinessesController(IBusinessService businessService) : Controller
 
         if (fullBusiness.Id is null)
         {
-            await businessService.CreateBusinessAsync(fullBusiness, person, form.IsUsersBusinessBool());
+            fullBusiness = await businessService.CreateBusinessAsync(fullBusiness, person, form.IsUsersBusinessBool());
             TempData["Success"] = "Business created!";
         }
         else
@@ -43,6 +50,6 @@ public class BusinessesController(IBusinessService businessService) : Controller
             TempData["Success"] = "Business updated!";
         }
 
-        return RedirectToAction(nameof(CreateGet));
+        return RedirectToAction(nameof(CreateGet), new { BusinessId = fullBusiness.Id });
     }
 }

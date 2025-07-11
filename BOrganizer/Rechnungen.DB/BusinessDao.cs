@@ -7,6 +7,7 @@ using Rechnungen.DB.Extensions;
 using Rechnungen.Model.General;
 using Rechnungen.Services.General;
 using RepoDb;
+using RepoDb.Extensions;
 
 namespace Rechnungen.DB;
 
@@ -92,6 +93,13 @@ public class BusinessDao(
             tx.Rollback();
             throw;
         }
+    }
+
+    public async Task<bool> IsPrimaryBusinessAsync(long businessId)
+    {
+        return !(await _businessRepo.QueryAsync(
+            where: b => b.is_primary == true && b.id == businessId,
+            top: 1)).IsNullOrEmpty();
     }
 
     public async Task<Business?> GetPrimaryBusinessAsync()

@@ -13,6 +13,7 @@ public interface IBusinessRepository
     Task<IEnumerable<Business>> GetAllAsync();
     Task<Business?> GetByIdAsync(long businessId);
     Task UpdateAsync(Business fullBusiness, Person? person, bool isUsersBusiness);
+    Task<bool> IsPrimaryBusinessAsync(long businessId);
 }
 
 public interface IBusinessService
@@ -22,6 +23,7 @@ public interface IBusinessService
     Task<IEnumerable<Business>> GetBusinessesAsync();
     Task<Business?> GetBusinessByIdAsync(long businessId);
     Task UpdateBusinessAsync(Business fullBusiness, Person? person, bool isUsersBusiness);
+    Task<bool> IsPrimaryBusinessAsync(long? businessId);
 }
 
 public class BusinessService(IBusinessRepository businessRepo) : IBusinessService
@@ -40,5 +42,12 @@ public class BusinessService(IBusinessRepository businessRepo) : IBusinessServic
     public async Task UpdateBusinessAsync(Business fullBusiness, Person? person, bool isUsersBusiness)
     {
         await businessRepo.UpdateAsync(fullBusiness, person, isUsersBusiness);
+    }
+
+    public Task<bool> IsPrimaryBusinessAsync(long? businessId)
+    {
+        if (businessId is null) { return Task.FromResult(false); }
+
+        return businessRepo.IsPrimaryBusinessAsync(businessId.Value);
     }
 }
