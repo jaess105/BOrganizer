@@ -1,6 +1,8 @@
-import {Head, Link} from '@inertiajs/react';
-import type {BreadcrumbItem} from "@/types";
-import AppLayout from "@/layouts/app-layout";
+import { Head, Link } from '@inertiajs/react';
+import type { BreadcrumbItem } from '@/types';
+import AppLayout from '@/layouts/app-layout';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 
 type Business = {
     name: string;
@@ -27,89 +29,86 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-
-export default function App({primaryBusiness, invoices}: Props) {
+export default function App({ primaryBusiness, invoices }: Props) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Dashboard"/>
-            <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
-                <div
-                    className="relative min-h-[100vh] flex-1 overflow-hidden rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border">
-                    <header className="mb-5">
-                        <h1 className="display-4">Welcome</h1>
-                    </header>
+            <Head title="Dashboard" />
 
+            <div className="flex flex-1 flex-col gap-6 p-6">
+                <header className="space-y-1">
+                    <h1 className="text-3xl font-bold tracking-tight">Welcome</h1>
                     {primaryBusiness && (
-                        <div className="mb-4">
-                            <p className="lead">
-                                Your primary business: <strong>{primaryBusiness.name}</strong>
-                            </p>
-                        </div>
+                        <p className="text-muted-foreground">
+                            Your primary business: <strong>{primaryBusiness.name}</strong>
+                        </p>
                     )}
+                </header>
 
-                    <div className="mb-5">
-                        <Link className="btn btn-link me-3" href="/Businesses/BusinessesOverview">
-                            Businesses
-                        </Link>
-                        <Link className="btn btn-link me-3" href="/Businesses/CreditCreation">
-                            Create a credit
-                        </Link>
-                        <Link className="btn btn-link" href="/Rechnungen/RechnungCreation">
-                            Create Rechnung
-                        </Link>
-                    </div>
+                <div className="flex flex-wrap gap-3">
+                    <Button asChild variant="link">
+                        <Link href="/Businesses/BusinessesOverview">Businesses</Link>
+                    </Button>
+                    <Button asChild variant="link">
+                        <Link href="/Businesses/CreditCreation">Create a credit</Link>
+                    </Button>
+                    <Button asChild variant="link">
+                        <Link href="/Rechnungen/RechnungCreation">Create Rechnung</Link>
+                    </Button>
+                </div>
 
-                    <section>
-                        <h2 className="mb-4">Your Invoices</h2>
+                <section className="space-y-4">
+                    <h2 className="text-2xl font-semibold">Your Invoices</h2>
 
-                        <div className="row">
-                            {invoices.map((invoice) => (
-                                <div key={invoice.id} className="col-md-4 mb-4">
-                                    <div className="card shadow-sm h-100">
-                                        <div className="card-body d-flex flex-column">
-                                            <h5 className="card-title mb-3">Rechnung {invoice.rechnungsnummer}</h5>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {invoices.map((invoice) => (
+                            <Card key={invoice.id} className="flex flex-col h-full">
+                                <CardContent className="flex flex-col gap-2 p-4">
+                                    <h3 className="text-lg font-medium">
+                                        Rechnung {invoice.rechnungsnummer}
+                                    </h3>
 
-                                            <p className="mb-1">
-                                                <strong>Am:</strong>{' '}
-                                                {new Date(invoice.erstellungsDatum).toLocaleDateString('de-DE')}
-                                            </p>
-                                            <p className="mb-1">
-                                                <strong>Steller:</strong> {invoice.rechnungsSteller.name}
-                                            </p>
-                                            <p className="mb-1">
-                                                <strong>Empfänger:</strong> {invoice.rechnungsEmpfaenger.name}
-                                            </p>
-                                            <p className="mb-1 mt-auto">
-                                                <strong>Summe:</strong>{' '}
-                                                {invoice.gesamtBetrag.toLocaleString('de-DE', {
-                                                    style: 'currency',
-                                                    currency: 'EUR',
-                                                })}
-                                            </p>
+                                    <p>
+                                        <span className="font-semibold">Am:</span>{' '}
+                                        {new Date(invoice.erstellungsDatum).toLocaleDateString('de-DE')}
+                                    </p>
+                                    <p>
+                                        <span className="font-semibold">Steller:</span>{' '}
+                                        {invoice.rechnungsSteller.name}
+                                    </p>
+                                    <p>
+                                        <span className="font-semibold">Empfänger:</span>{' '}
+                                        {invoice.rechnungsEmpfaenger.name}
+                                    </p>
+                                    <p className="mt-auto">
+                                        <span className="font-semibold">Summe:</span>{' '}
+                                        {invoice.gesamtBetrag.toLocaleString('de-DE', {
+                                            style: 'currency',
+                                            currency: 'EUR',
+                                        })}
+                                    </p>
 
-                                            <Link
-                                                href={`/Rechnungen/RechnungCreation?InvoiceId=${invoice.id}`}
-                                                className="d-block mt-2"
-                                            >
+                                    <div className="mt-4 space-y-1">
+                                        <Button asChild variant="outline" className="w-full">
+                                            <Link href={`/Rechnungen/RechnungCreation?InvoiceId=${invoice.id}`}>
                                                 Edit
                                             </Link>
-                                            <Link href={`/Rechnungen/PdfView?InvoiceId=${invoice.id}`}
-                                                  className="d-block">
+                                        </Button>
+                                        <Button asChild variant="outline" className="w-full">
+                                            <Link href={`/Rechnungen/PdfView?InvoiceId=${invoice.id}`}>
                                                 View Pdf
                                             </Link>
-                                            <Link
-                                                href={`/RechnungCreation/OnPostDownload?invoiceId=${invoice.id}`}
-                                                className="d-block"
-                                            >
+                                        </Button>
+                                        <Button asChild variant="outline" className="w-full">
+                                            <Link href={`/RechnungCreation/OnPostDownload?invoiceId=${invoice.id}`}>
                                                 Download Pdf
                                             </Link>
-                                        </div>
+                                        </Button>
                                     </div>
-                                </div>
-                            ))}
-                        </div>
-                    </section>
-                </div>
+                                </CardContent>
+                            </Card>
+                        ))}
+                    </div>
+                </section>
             </div>
         </AppLayout>
     );
