@@ -28,13 +28,15 @@ public class InvoiceDao(
     private readonly InvoiceRepository _repo = new(connectionString);
     private readonly InvoiceItemRepository _repoItem = new(connectionString);
 
-    public async Task SaveAsync(Invoice invoice)
+    public async Task<Invoice> SaveAsync(Invoice invoice)
     {
         InvoiceDto dto = invoice.ToDto();
         long? id = await _repo.InsertAsync<long>(dto);
 
         List<InvoiceItemDto> items = invoice.Items.Select(i => i.ToDto(id.Value)).ToList();
         await _repoItem.InsertAllAsync(items);
+
+        return (await GetByIdAsync(id!.Value))!;
     }
 
     public async Task<Invoice?> GetByIdAsync(long invoiceId)

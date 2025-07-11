@@ -20,7 +20,7 @@ public interface ICreditRepository
 
 public interface IInvoiceRepository
 {
-    Task SaveAsync(Invoice invoice);
+    Task<Invoice> SaveAsync(Invoice invoice);
     Task<Invoice?> GetByIdAsync(long invoiceId);
 
     Task<Invoice> UpdateAsync(
@@ -44,7 +44,7 @@ public interface IRechnungsService
     Task<Credit> CreateCreditAsync(string institute, string iban, string bic, string inhaber);
     Task<IEnumerable<Credit>> GetCreditsAsync();
     Task<Credit?> GetCreditByIdAsync(long creditId);
-    Task CreateInvoiceAsync(Invoice invoice);
+    Task<Invoice> CreateInvoiceAsync(Invoice invoice);
     Task<Invoice?> GetInvoiceByIdAsync(long invoiceId);
 
     Task<Invoice> UpdateInvoiceAsync(long invoiceId,
@@ -103,7 +103,7 @@ public class RechnungsService(
         return creditRepo.UpdateAsync(id, institute, iban, bic, inhaber);
     }
 
-    public Task CreateInvoiceAsync(Invoice invoice)
+    public Task<Invoice> CreateInvoiceAsync(Invoice invoice)
     {
         return invoiceRepo.SaveAsync(invoice);
     }
