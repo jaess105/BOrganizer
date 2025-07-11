@@ -46,7 +46,7 @@ export default function App({ primaryBusiness, invoices }: Props) {
 
                 <div className="flex flex-wrap gap-4">
                     <Button asChild variant="secondary" size="lg">
-                        <Link href="/Businesses/BusinessesOverview">Businesses</Link>
+                        <Link href="/Businesses">Businesses</Link>
                     </Button>
                     <Button asChild variant="secondary" size="lg">
                         <Link href="/Businesses/CreditCreation">Create a credit</Link>

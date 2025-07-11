@@ -5,10 +5,23 @@ using Rechnungen.Services.General;
 
 namespace BOrganizer.InertiaRact.Controllers.Businesses;
 
-[Route("Businesses/Create")]
+[Route("Businesses")]
 public class BusinessesController(IBusinessService businessService) : Controller
 {
     [HttpGet("")]
+    public async Task<IActionResult> Index()
+    {
+        IEnumerable<Business> businesses = await businessService.GetBusinessesAsync();
+
+        return InertiaCore.Inertia.Render(
+            "Businesses/Overview",
+            new
+            {
+                businesses
+            });
+    }
+
+    [HttpGet("Create")]
     public async Task<IActionResult> CreateGet(long? businessId)
     {
         Business? business = businessId.HasValue
@@ -27,7 +40,7 @@ public class BusinessesController(IBusinessService businessService) : Controller
             });
     }
 
-    [HttpPost("")]
+    [HttpPost("Create")]
     public async Task<IActionResult> CreatePost(
         [FromForm] BusinessForm? form)
     {
