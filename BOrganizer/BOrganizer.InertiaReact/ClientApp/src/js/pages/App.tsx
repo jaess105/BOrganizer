@@ -95,13 +95,8 @@ export default function App({primaryBusiness, invoices}: Props) {
                                             </Link>
                                         </Button>
                                         <Button asChild variant="outline" size="sm">
-                                            <Link href={`/Rechnungen/PdfView?InvoiceId=${invoice.id}`}>
+                                            <Link href={`/Rechnungen/Pdf/View?invoiceId=${invoice.id}`}>
                                                 View Pdf
-                                            </Link>
-                                        </Button>
-                                        <Button asChild variant="outline" size="sm">
-                                            <Link href={`/RechnungCreation/OnPostDownload?invoiceId=${invoice.id}`}>
-                                                Download Pdf
                                             </Link>
                                         </Button>
                                     </div>
