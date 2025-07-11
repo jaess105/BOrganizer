@@ -49,7 +49,7 @@ export default function App({ primaryBusiness, invoices }: Props) {
                         <Link href="/Businesses">Businesses</Link>
                     </Button>
                     <Button asChild variant="secondary" size="lg">
-                        <Link href="/Businesses/CreditCreation">Create a credit</Link>
+                        <Link href="/Businesses/Credit/Create">Create a credit</Link>
                     </Button>
                     <Button asChild variant="secondary" size="lg">
                         <Link href="/Rechnungen/RechnungCreation">Create Rechnung</Link>

@@ -15,6 +15,7 @@ public interface ICreditRepository
     Task<Credit> SaveAsync(string institute, string iban, string bic, string inhaber);
     Task<IEnumerable<Credit>> GetAllAsync();
     Task<Credit?> GetByIdAsync(long creditId);
+    Task<Credit> UpdateAsync(long id, string institute, string iban, string bic, string inhaber);
 }
 
 public interface IInvoiceRepository
@@ -57,6 +58,9 @@ public interface IRechnungsService
 
     Task<bool> InvoiceExistsAsync(long invoiceId);
     Task<IEnumerable<Invoice>> GetInvoicesAsync();
+
+    Task<Credit> UpdateCreditAsync(long id, string institute, string iban, string bic,
+        string inhaber);
 }
 
 public class RechnungsService(
@@ -93,6 +97,11 @@ public class RechnungsService(
     }
 
     public Task<Credit?> GetCreditByIdAsync(long creditId) => creditRepo.GetByIdAsync(creditId);
+
+    public Task<Credit> UpdateCreditAsync(long id, string institute, string iban, string bic, string inhaber)
+    {
+        return creditRepo.UpdateAsync(id, institute, iban, bic, inhaber);
+    }
 
     public Task CreateInvoiceAsync(Invoice invoice)
     {

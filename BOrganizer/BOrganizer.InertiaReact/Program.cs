@@ -38,7 +38,8 @@ builder.Services.AddSingleton<IBusinessRepository>(p =>
     new BusinessDao(connectionString, p.GetRequiredService<IDbConnectionFactory>()));
 builder.Services.AddSingleton<IRechnungsNummerRepository>(p =>
     new RechnungsNummerDao(connectionString, p.GetRequiredService<IDbConnectionFactory>()));
-builder.Services.AddSingleton<ICreditRepository>(p => new CreditDao(connectionString));
+builder.Services.AddSingleton<ICreditRepository>(p =>
+    new CreditDao(connectionString, p.GetRequiredService<IDbConnectionFactory>()));
 builder.Services.AddSingleton<IInvoiceRepository>(p =>
     new InvoiceDao(connectionString,
         p.GetRequiredService<IBusinessRepository>(),

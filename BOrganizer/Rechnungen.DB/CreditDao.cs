@@ -1,5 +1,8 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Data;
+using DB.Core;
 using Npgsql;
+using Rechnungen.DB.Extensions;
 using Rechnungen.Model.Invoices;
 using Rechnungen.Services.Invoices;
 using RepoDb;
@@ -9,7 +12,9 @@ namespace Rechnungen.DB;
 internal class CreditRepository(string connectionString) :
     BaseRepository<CreditDto, NpgsqlConnection>(connectionString);
 
-public class CreditDao(string connectionString) : ICreditRepository
+public class CreditDao(
+    string connectionString,
+    IDbConnectionFactory connectionFactory) : ICreditRepository
 {
     private readonly CreditRepository _repo = new(connectionString);
 
@@ -34,6 +39,21 @@ public class CreditDao(string connectionString) : ICreditRepository
         return (await _repo.QueryAsync(c => c.id == creditId))
             .Select(dto => dto.ToDomain())
             .FirstOrDefault();
+    }
+
+    public async Task<Credit> UpdateAsync(long id, string institute, string iban, string bic, string inhaber)
+    {
+        using IDbConnection conn = connectionFactory.CreateOpenConnection();
+        await conn.UpdateAsync(new CreditDto
+        {
+            id = id,
+            institute = institute,
+            bic = bic,
+            iban = iban,
+            inhaber = inhaber
+        });
+
+        return (await GetByIdAsync(id))!;
     }
 }
 

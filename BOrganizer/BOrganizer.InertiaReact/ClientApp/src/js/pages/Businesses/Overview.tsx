@@ -1,10 +1,9 @@
 import {Head, Link} from '@inertiajs/react';
-import {Business} from '@/types/business';
 import {PageProps} from '@/types';
 import {Card, CardContent, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
 import {Button} from '@/components/ui/button';
-import {Separator} from '@/components/ui/separator';
 import AppLayout from "@/layouts/app-layout";
+import {Business} from "@/types/busines";
 
 interface Props extends PageProps {
     businesses: Business[];
