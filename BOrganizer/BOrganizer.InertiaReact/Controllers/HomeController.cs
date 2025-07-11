@@ -36,6 +36,12 @@ public class HomeController(
         return InertiaCore.Inertia.Render("App", props);
     }
 
+    [HttpGet("dashboard")]
+    public Task<Response> DashBoard()
+    {
+        return Task.FromResult(InertiaCore.Inertia.Render("dashboard"));
+    }
+
     // public IActionResult Privacy()
     // {
     //     return View();

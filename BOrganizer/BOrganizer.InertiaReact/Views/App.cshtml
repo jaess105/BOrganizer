@@ -7,12 +7,13 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link href="css/style.css" rel="stylesheet">
     @await Inertia.Head(Model)
 </head>
 <body>
 @Vite.ReactRefresh()
 @await Inertia.Html(Model)
-@Vite.Input("src/main.tsx")
+@Vite.Input("src/js/main.tsx")
 <main id="root">
 </main>
 </body>
