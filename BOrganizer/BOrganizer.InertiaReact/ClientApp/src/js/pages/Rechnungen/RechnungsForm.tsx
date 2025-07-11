@@ -11,6 +11,16 @@ import {
     SelectTrigger,
     SelectValue
 } from "@/components/ui/select";
+import {Label} from "@/components/ui/label";
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover"
+import {Button} from "@/components/ui/button";
+import {ChevronDownIcon} from "lucide-react";
+import {Calendar} from "@/components/ui/calendar"
+
 
 type Business = {
     id: number;
@@ -68,8 +78,8 @@ export default function RechnungCreationForm({businesses, credits, steuersaetze,
         invoiceId: invoiceDto?.invoiceId ?? null,
         rechnungsStellerId: invoiceDto?.rechnungsStellerId ?? '',
         rechnungsEmpfaengerId: invoiceDto?.rechnungsEmpfaengerId ?? '',
-        rechnungsDatum: toDate(invoiceDto?.rechnungsDatum).toISOString().substring(0, 10),
-        lieferDatum: toDate(invoiceDto?.lieferDatum).toISOString().substring(0, 10),
+        rechnungsDatum: toDate(invoiceDto?.rechnungsDatum),
+        lieferDatum: toDate(invoiceDto?.lieferDatum),
         steuersatzId: invoiceDto?.steuersatzId ?? (steuersaetze[0]?.id) ?? '',
         creditId: invoiceDto?.creditId ?? '',
         invoiceItems: invoiceDto?.invoiceItems ?? ([] as InvoiceItem[]),
@@ -120,6 +130,10 @@ export default function RechnungCreationForm({businesses, credits, steuersaetze,
         });
     };
 
+    // date picker
+    const [rechnungsDatumOpen, setRechnungsDatumOpen] = React.useState(false)
+    const [lieferDatumOpen, setLieferDatumOpen] = React.useState(false)
+
     return (
         <AppLayout>
             <div className="space-y-8 p-6">
@@ -134,7 +148,9 @@ export default function RechnungCreationForm({businesses, credits, steuersaetze,
                                 value={data.rechnungsStellerId.toString()}
                                 onValueChange={(e) => setData('rechnungsStellerId', e)}
                             >
-                                <SelectTrigger className="w-auto">
+                                <SelectTrigger
+                                    className="w-full rounded-md border py-2 px-3 "
+                                >
                                     <SelectValue placeholder="Bitte wählen"/>
                                 </SelectTrigger>
                                 <SelectContent>
@@ -151,15 +167,16 @@ export default function RechnungCreationForm({businesses, credits, steuersaetze,
                         </div>
 
                         <div>
-                            <label htmlFor="rechnungsEmpfaengerId" className="block text-sm font-medium  mb-1">
+                            <Label htmlFor="rechnungsEmpfaengerId" className="block text-sm font-medium  mb-1">
                                 Rechnungsempfänger
-                            </label>
+                            </Label>
                             <Select
                                 value={data.rechnungsEmpfaengerId.toString()}
                                 onValueChange={(e) => setData('rechnungsEmpfaengerId', e)}
-                                // className="block w-full rounded-md border py-2 px-3 shadow-sm focus:border-primary focus:ring focus:ring-primary/50 focus:ring-opacity-50"
                             >
-                                <SelectTrigger className="w-auto">
+                                <SelectTrigger
+                                    className="w-full rounded-md border py-2 px-3 "
+                                >
                                     <SelectValue placeholder="Bitte wählen"/>
                                 </SelectTrigger>
                                 <SelectContent>
@@ -178,35 +195,71 @@ export default function RechnungCreationForm({businesses, credits, steuersaetze,
 
                     {/* Rechnungsdatum & Lieferdatum */}
                     <div className="grid grid-cols-2 gap-6">
-                        <div>
-                            <label htmlFor="rechnungsDatum" className="block text-sm font-medium  mb-1">
+                        <div className="flex flex-col gap-3">
+                            <Label htmlFor="rechnungsdatum" className="px-1">
                                 Rechnungsdatum
-                            </label>
-                            <input
-                                id="rechnungsDatum"
-                                type="date"
-                                value={data.rechnungsDatum}
-                                onChange={(e) => setData('rechnungsDatum', e.target.value)}
-                                className="block w-full rounded-md border py-2 px-3 shadow-sm focus:border-primary focus:ring focus:ring-primary/50 focus:ring-opacity-50"
-                            />
+                            </Label>
+                            <Popover open={rechnungsDatumOpen} onOpenChange={setRechnungsDatumOpen}>
+                                <PopoverTrigger asChild>
+                                    <Button
+                                        variant="outline"
+                                        id="rechnungsdatum"
+                                        className="w-full justify-between font-normal"
+                                    >
+                                        {data.rechnungsDatum ? data.rechnungsDatum.toLocaleDateString() : "Select date"}
+                                        <ChevronDownIcon/>
+                                    </Button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+                                    <Calendar
+                                        mode="single"
+                                        selected={data.rechnungsDatum}
+                                        captionLayout="dropdown"
+                                        onSelect={(date) => {
+                                            if (date != undefined) {
+                                                setData('rechnungsDatum', date);
+                                            }
+                                            setRechnungsDatumOpen(false);
+                                        }}
+                                    />
+                                </PopoverContent>
+                            </Popover>
                             {errors.rechnungsDatum && (
                                 <p className="mt-1 text-sm text-red-600">{errors.rechnungsDatum}</p>
                             )}
                         </div>
 
-                        <div>
-                            <label htmlFor="lieferDatum" className="block text-sm font-medium  mb-1">
+                        <div className="flex flex-col gap-3">
+                            <Label htmlFor="lieferDatum" className="px-1">
                                 Lieferdatum
-                            </label>
-                            <input
-                                id="lieferDatum"
-                                type="date"
-                                value={data.lieferDatum}
-                                onChange={(e) => setData('lieferDatum', e.target.value)}
-                                className="block w-full rounded-md border py-2 px-3 shadow-sm focus:border-primary focus:ring focus:ring-primary/50 focus:ring-opacity-50"
-                            />
-                            {errors.lieferDatum && (
-                                <p className="mt-1 text-sm text-red-600">{errors.lieferDatum}</p>
+                            </Label>
+                            <Popover open={lieferDatumOpen} onOpenChange={setLieferDatumOpen}>
+                                <PopoverTrigger asChild>
+                                    <Button
+                                        variant="outline"
+                                        id="lieferDatum"
+                                        className="w-full justify-between font-normal"
+                                    >
+                                        {data.lieferDatum? data.lieferDatum.toLocaleDateString() : "Select date"}
+                                        <ChevronDownIcon/>
+                                    </Button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+                                    <Calendar
+                                        mode="single"
+                                        selected={data.lieferDatum}
+                                        captionLayout="dropdown"
+                                        onSelect={(date) => {
+                                            if (date != undefined) {
+                                                setData('lieferDatum', date);
+                                            }
+                                            setLieferDatumOpen(false);
+                                        }}
+                                    />
+                                </PopoverContent>
+                            </Popover>
+                            {errors.rechnungsDatum && (
+                                <p className="mt-1 text-sm text-red-600">{errors.rechnungsDatum}</p>
                             )}
                         </div>
                     </div>
