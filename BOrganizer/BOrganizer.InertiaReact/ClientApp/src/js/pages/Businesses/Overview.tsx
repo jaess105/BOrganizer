@@ -1,5 +1,5 @@
 import {Head, Link} from '@inertiajs/react';
-import {PageProps} from '@/types';
+import {type BreadcrumbItem, PageProps} from '@/types';
 import {Card, CardContent, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
 import {Button} from '@/components/ui/button';
 import AppLayout from "@/layouts/app-layout";
@@ -9,9 +9,16 @@ interface Props extends PageProps {
     businesses: Business[];
 }
 
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Businesses',
+        href: '/Businesses',
+    },
+];
+
 export default function Overview({businesses}: Props) {
     return (
-        <AppLayout>
+        <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Businesses Overview"/>
             <div className="max-w-6xl mx-auto p-6">
                 <h1 className="text-2xl font-bold mb-4">All Businesses</h1>
