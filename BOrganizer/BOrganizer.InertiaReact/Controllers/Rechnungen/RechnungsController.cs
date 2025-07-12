@@ -1,5 +1,6 @@
 using System.Collections.Immutable;
 using System.ComponentModel.DataAnnotations;
+using BOrganizer.Inertia.Models.Rechnungen;
 using Microsoft.AspNetCore.Mvc;
 using Rechnungen.Model.General;
 using Rechnungen.Model.Invoices;
@@ -14,6 +15,15 @@ public class RechnungsController(
     IRechnungsService rechnungsService
 ) : Controller
 {
+    [HttpGet("")]
+    public async Task<IActionResult> Index()
+    {
+        IEnumerable<Invoice> invoices = await rechnungsService.GetInvoicesAsync();
+        return InertiaCore.Inertia.Render("Rechnungen/Overview",
+            new { invoices = invoices.Select(TsInvoiceGridInvoice.FromInvoice).ToArray() });
+    }
+
+
     [HttpGet("Create")]
     public async Task<IActionResult> CreateGet(long? invoiceId)
     {

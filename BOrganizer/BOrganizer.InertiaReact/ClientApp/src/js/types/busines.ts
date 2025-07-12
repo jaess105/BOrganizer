@@ -68,9 +68,9 @@ interface Credit {
     BIC: string;
     Inhaber: string;
 
-    Short(): string;
+    short(): string;
 
-    IbanNotation(): string;
+    ibanNotation(): string;
 }
 
 class CreditImpl implements Credit {
@@ -88,11 +88,11 @@ class CreditImpl implements Credit {
         this.Inhaber = Inhaber;
     }
 
-    Short(): string {
+    short(): string {
         return `${this.Institute}: ${this.IBAN}`;
     }
 
-    IbanNotation(): string {
+    ibanNotation(): string {
         const together = this.IBAN.replace(/\s+/g, "");
         return Array.from({length: Math.ceil(together.length / 4)}, (_, i) =>
             together.substr(i * 4, 4)
@@ -102,31 +102,31 @@ class CreditImpl implements Credit {
 
 
 interface InvoiceItem {
-    Beschreibung: string;
-    Quantity: number; // uint in C# → number (assumed non-negative)
-    UnitPrice: number;
-    HardTotal?: number | null;
-    Total: number;
-    Rechnungsbetrag: number;
+    beschreibung: string;
+    quantity: number; // uint in C# → number (assumed non-negative)
+    unitPrice: number;
+    hardTotal?: number | null;
+    total: number;
+    rechnungsbetrag: number;
 }
 
 export interface Invoice {
-    RechnungsSteller: Business;
-    RechnungsEmpfaenger: Business;
-    ErstellungsDatum: string; // DateOnly → ISO date string "YYYY-MM-DD"
-    LieferDatum: string;      // DateOnly → ISO date string
-    Rechnungsnummer: RechnungsNummer;
-    SteuerAusweisung: InvoiceSteuersatz;
-    Zahlungsziel: string;
-    AngabeZurSteuerbefreiung: string;
-    Items: InvoiceItem[];
-    RechnungsStellerCredit: Credit;
-    UStId?: string | null;
-    HRB?: string | null;
-    Amtsgericht?: string | null;
-    Geschaeftsfuehrer?: string | null;
-    Webseite?: string | null;
+    rechnungsSteller: Business;
+    rechnungsEmpfaenger: Business;
+    erstellungsDatum: string; // DateOnly → ISO date string "YYYY-MM-DD"
+    lieferDatum: string;      // DateOnly → ISO date string
+    rechnungsnummer: RechnungsNummer;
+    steuerAusweisung: InvoiceSteuersatz;
+    zahlungsziel: string;
+    angabeZurSteuerbefreiung: string;
+    items: InvoiceItem[];
+    rechnungsStellerCredit: Credit;
+    uStId?: string | null;
+    hrb?: string | null;
+    amtsgericht?: string | null;
+    geschaeftsfuehrer?: string | null;
+    webseite?: string | null;
 
     id?: number | null;
-    GesamtBetrag: number;
+    gesamtBetrag: number;
 }

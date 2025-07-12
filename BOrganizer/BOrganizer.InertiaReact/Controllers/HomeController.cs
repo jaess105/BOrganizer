@@ -1,3 +1,4 @@
+using BOrganizer.Inertia.Models.Rechnungen;
 using InertiaCore;
 using Microsoft.AspNetCore.Mvc;
 using Rechnungen.Model.General;
@@ -25,15 +26,7 @@ public class HomeController(
         var props = new
         {
             primaryBusiness,
-            invoices = invoices.Select(invoice => new
-            {
-                Id = invoice.Id.ToString(),
-                Rechnungsnummer = invoice.Rechnungsnummer.ToString(),
-                ErstellungsDatum = invoice.ErstellungsDatum.ToString("o"), // ISO 8601
-                RechnungsSteller = new { Name = invoice.RechnungsSteller.Name },
-                RechnungsEmpfaenger = new { Name = invoice.RechnungsEmpfaenger.Name },
-                invoice.GesamtBetrag
-            }).ToList(),
+            invoices = invoices.Select(TsInvoiceGridInvoice.FromInvoice).ToList(),
         };
         return InertiaCore.Inertia.Render("App", props);
     }
