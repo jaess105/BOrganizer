@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using Rechnungen.Model.General;
+using Rechnungen.Model.Invoices;
 using Rechnungen.Model.Payments;
 using Rechnungen.Services.General;
 using Rechnungen.Services.Invoices;
@@ -23,9 +24,17 @@ public class PaymentsController(
             paymentDto = payment.ToDto();
         }
 
+        RechnungsNummer? rechnungsNummer = null;
+        if (paymentDto?.rechnungId is not null)
+        {
+            rechnungsNummer =
+                await rechnungsService.GetRechnungsNummerByIdAsync(paymentDto.rechnungId.Value);
+        }
+
         return InertiaCore.Inertia.Render("Payments/PaymentForm", new
         {
-            payment = paymentDto
+            payment = paymentDto,
+            rechnungsNummer = rechnungsNummer
         });
     }
 
