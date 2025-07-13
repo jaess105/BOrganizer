@@ -79,14 +79,14 @@ public class BusinessDao(
             long businessId;
             if (business.Id is not null)
             {
-                businessId = business.Id.Value;
+                businessId = businessDto.id = business.Id.Value;
                 await conn.UpdateAsync(businessDto, transaction: tx);
             }
             else { businessId = await conn.InsertAsync<BusinessDto, long>(businessDto, transaction: tx); }
 
             tx.Commit();
 
-            return business;
+            return business with { Id = businessId };
         }
         catch
         {
