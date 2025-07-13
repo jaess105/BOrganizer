@@ -5,6 +5,7 @@ import {Label} from '@/components/ui/label';
 import {Button} from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import {Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle} from '@/components/ui/dialog';
+import type {BreadcrumbItem} from "@/types";
 
 type Props = {
     business: {
@@ -40,6 +41,17 @@ type FormData = {
     isUsersBusiness: boolean;
 };
 
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Businesses',
+        href: '/Businesses',
+    },
+    {
+        title: 'Create Business',
+        href: '/Businesses/Create',
+    },
+];
+
 export default function BusinessFormPage(
     {
         business,
@@ -66,10 +78,6 @@ export default function BusinessFormPage(
     });
 
 
-    // transform((data ) => {
-    //     return ;
-    // })
-
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         post('/Businesses/Create', {
@@ -79,11 +87,13 @@ export default function BusinessFormPage(
         });
     }
 
+    const heading = business?.id ? `Update ${business.name ?? 'Business'}` : "Business Creation";
     return (
-        <AppLayout>
+        <AppLayout breadcrumbs={breadcrumbs}
+                   heading={heading}>
             <form onSubmit={handleSubmit} className="space-y-6 max-w-3xl mx-auto p-6">
                 <h1 className="text-2xl font-bold">
-                    {data.id ? 'Edit Business' : 'Create Business'}
+                    {heading}
                 </h1>
 
                 {/* Business Info */}
