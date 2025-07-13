@@ -1,12 +1,33 @@
 ﻿open System
+open Microsoft.Extensions.Configuration
 open DB.Core
 open DbUp
 open Rechnungen.DB
 
+type DB = { POSTGRES: string }
+
 let scriptProvider = [ DbScriptsProvider() ]
 
-let connectionString =
-    "Host=db;Port=5432;Username=pguser;Password=nice_pw;Database=invoices"
+
+let loadConnectionString () =
+    let builder =
+        ConfigurationBuilder()
+            .SetBasePath(AppContext.BaseDirectory)
+            .AddJsonFile(
+#if DEBUG
+                "appsettings.Development.json",
+#else
+                "appsettings.json",
+#endif
+                optional = false,
+                reloadOnChange = true
+            )
+
+    let config = builder.Build()
+    let section = config.GetSection("DB:POSTGRES")
+    section.Value
+
+let connectionString = loadConnectionString ()
 
 let getScriptAssembliesFromProviders () =
     AppDomain.CurrentDomain.GetAssemblies()
