@@ -20,6 +20,7 @@ import {
 import {Button} from "@/components/ui/button";
 import {ChevronDownIcon} from "lucide-react";
 import {Calendar} from "@/components/ui/calendar"
+import type {BreadcrumbItem} from "@/types";
 
 
 type Business = {
@@ -64,6 +65,17 @@ type Props = {
     steuersaetze: Steuersatz[];
     invoiceDto: InvoiceDto | null;
 };
+
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Rechnungen',
+        href: '/Rechnungen',
+    },
+    {
+        title: 'Create Rechnung',
+        href: '/Rechnungen/Create',
+    },
+];
 
 function toDate(date?: Date | undefined): Date {
     if (date == undefined) {
@@ -135,7 +147,8 @@ export default function RechnungCreationForm({businesses, credits, steuersaetze,
     const [lieferDatumOpen, setLieferDatumOpen] = React.useState(false)
 
     return (
-        <AppLayout>
+        <AppLayout breadcrumbs={breadcrumbs}
+                   heading={"Rechnung Creation"}>
             <div className="space-y-8 p-6">
                 <form onSubmit={handleSubmit}>
                     {/* Rechnungssteller & Empfänger */}
@@ -240,7 +253,7 @@ export default function RechnungCreationForm({businesses, credits, steuersaetze,
                                         id="lieferDatum"
                                         className="w-full justify-between font-normal"
                                     >
-                                        {data.lieferDatum? data.lieferDatum.toLocaleDateString() : "Select date"}
+                                        {data.lieferDatum ? data.lieferDatum.toLocaleDateString() : "Select date"}
                                         <ChevronDownIcon/>
                                     </Button>
                                 </PopoverTrigger>
