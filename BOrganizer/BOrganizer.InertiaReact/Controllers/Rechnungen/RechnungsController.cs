@@ -4,6 +4,7 @@ using BOrganizer.Inertia.Models.Rechnungen;
 using Microsoft.AspNetCore.Mvc;
 using Rechnungen.Model.General;
 using Rechnungen.Model.Invoices;
+using Rechnungen.Model.Payments;
 using Rechnungen.Services.General;
 using Rechnungen.Services.Invoices;
 
@@ -18,9 +19,14 @@ public class RechnungsController(
     [HttpGet("")]
     public async Task<IActionResult> Index()
     {
-        IEnumerable<Invoice> invoices = await rechnungsService.GetInvoicesAsync();
+        (IEnumerable<Invoice> invoices, Dictionary<long, Payment> payments) =
+            await rechnungsService.GetInvoicesWithPaymentsAsync();
         return InertiaCore.Inertia.Render("Rechnungen/Overview",
-            new { invoices = invoices.Select(TsInvoiceGridInvoice.FromInvoice).ToArray() });
+            new
+            {
+                invoices = invoices.Select(TsInvoiceGridInvoice.FromInvoice).ToArray(),
+                payments = payments
+            });
     }
 
 
@@ -32,22 +38,9 @@ public class RechnungsController(
         ImmutableArray<InvoiceSteuersatz> steuersaetze = InvoiceSteuersatz.Steuersaetze;
 
         InvoiceDto? invoiceDto = null;
-        if (invoiceId is not null)
+        if (invoiceId is not null && await rechnungsService.GetInvoiceByIdAsync(invoiceId.Value) is { } invoice)
         {
-            // Load existing invoice for editing
-            if (await rechnungsService.GetInvoiceByIdAsync(invoiceId.Value) is { } invoice)
-            {
-                invoiceDto = invoice.ToInvoiceDto();
-            }
-            //
-            // RechnungsStellerId = invoice.RechnungsSteller.Id;
-            // RechnungsEmpfaengerId = invoice.RechnungsEmpfaenger.Id;
-            // RechnungsDatum = invoice.ErstellungsDatum;
-            // LieferDatum = invoice.LieferDatum;
-            // SteuersatzId = invoice.SteuerAusweisung.Id;
-            // CreditId = invoice.RechnungsStellerCredit.Id;
-            // InvoiceItems = invoice.Items.ToList();
-            // RechnungsNummer = invoice.Rechnungsnummer;
+            invoiceDto = invoice.ToInvoiceDto();
         }
 
         return InertiaCore.Inertia.Render("Rechnungen/RechnungsForm", new
