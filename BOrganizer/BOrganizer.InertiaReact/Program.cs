@@ -5,6 +5,7 @@ using Rechnungen.Creator.PDF;
 using Rechnungen.DB;
 using Rechnungen.Services.General;
 using Rechnungen.Services.Invoices;
+using Rechnungen.Services.Payments;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -46,10 +47,15 @@ builder.Services.AddSingleton<IInvoiceRepository>(p =>
         p.GetRequiredService<ICreditRepository>(),
         p.GetRequiredService<IRechnungsNummerRepository>(),
         p.GetRequiredService<IDbConnectionFactory>()));
+builder.Services.AddSingleton<IPaymentRepository>(p =>
+    new PaymentDao(connectionString,
+        p.GetRequiredService<IDbConnectionFactory>()));
+
 
 // services
 builder.Services.AddSingleton<IBusinessService, BusinessService>();
 builder.Services.AddSingleton<IRechnungsService, RechnungsService>();
+builder.Services.AddSingleton<IPaymentService, PaymentService>();
 
 WebApplication app = builder.Build();
 
