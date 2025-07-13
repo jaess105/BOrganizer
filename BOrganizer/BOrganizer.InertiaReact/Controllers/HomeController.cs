@@ -21,7 +21,7 @@ public class HomeController(
         Business? primaryBusiness;
         List<Invoice> invoices;
         primaryBusiness = await businessService.GetPrimaryBusinessAsync();
-        invoices = (await rechnungsService.GetInvoicesAsync()).ToList();
+        invoices = (await rechnungsService.GetUnpayedInvoicesAsync()).ToList();
 
         var props = new
         {
