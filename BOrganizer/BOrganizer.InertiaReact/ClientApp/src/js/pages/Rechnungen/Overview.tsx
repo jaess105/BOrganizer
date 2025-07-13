@@ -23,21 +23,12 @@ export default function RechnungenOverview({invoices}: Props) {
             heading={"All Invoices"}
             leadingButtons={[
                 <Button asChild variant="secondary" size="lg">
-                    <Link href="/Rechnungen/Create">Create a Invoice</Link>
+                    <Link href="/Rechnungen/Create">Create an Invoice</Link>
                 </Button>
             ]}
         >
             <Head title="Rechnungen"/>
-            <InvoiceGrid invoices={invoices.map(function (i) {
-                return {
-                    id: i.id!.toString(),
-                    rechnungsnummer: i.rechnungsnummer.toString(),
-                    erstellungsDatum: i.erstellungsDatum.toString(),
-                    rechnungsSteller: i.rechnungsSteller,
-                    rechnungsEmpfaenger: i.rechnungsEmpfaenger,
-                    gesamtBetrag: i.gesamtBetrag,
-                };
-            })}/>
+            <InvoiceGrid invoices={invoices}/>
         </AppLayout>
     );
 }
