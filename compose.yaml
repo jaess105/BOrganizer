@@ -5,6 +5,8 @@
       dockerfile: BOrganizer/DB.Init/Dockerfile
     depends_on:
       - db
+    volumes:
+      - ./appsettings.Development.json:/app/appsettings.Development.json
 
   borgainzerpages:
     environment:
