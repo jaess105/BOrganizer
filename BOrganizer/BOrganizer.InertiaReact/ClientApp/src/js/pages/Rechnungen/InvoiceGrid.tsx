@@ -2,7 +2,7 @@ import React from 'react';
 import {Card, CardContent, CardHeader} from '@/components/ui/card';
 import {Button} from '@/components/ui/button';
 import {Link} from '@inertiajs/react';
-import {Invoice} from '@/types/invoice_grid';
+import {Invoice} from '@/types/busines';
 
 type InvoiceGridProps = {
     invoices: Invoice[];
@@ -14,7 +14,7 @@ const InvoiceGrid: React.FC<InvoiceGridProps> = ({invoices}) => (
             <Card key={invoice.id} className="flex flex-col h-full shadow-lg border border-muted">
                 <CardHeader className="pb-2">
                     <h3 className="text-xl font-semibold text-primary">
-                        Rechnung {invoice.rechnungsnummer}
+                        Rechnung {invoice.rechnungsnummer.toString()}
                     </h3>
                 </CardHeader>
                 <CardContent className="flex flex-col gap-3 p-6">
@@ -47,6 +47,11 @@ const InvoiceGrid: React.FC<InvoiceGridProps> = ({invoices}) => (
                         <Button asChild variant="outline" size="sm">
                             <Link href={`/Rechnungen/Pdf/View?invoiceId=${invoice.id}`}>
                                 View Pdf
+                            </Link>
+                        </Button>
+                        <Button asChild variant="outline" size="sm">
+                            <Link href={`/Payments/Create/FromInvoice/${invoice.id}`}>
+                                To Payment
                             </Link>
                         </Button>
                     </div>

@@ -1,20 +1,12 @@
 import {Head, Link} from '@inertiajs/react';
 import type {BreadcrumbItem} from '@/types';
+import {Invoice} from "@/types/busines";
 import AppLayout from '@/layouts/app-layout';
 import {Button} from '@/components/ui/button';
 import InvoiceGrid from './Rechnungen/InvoiceGrid';
 
 type Business = {
     name: string;
-};
-
-type Invoice = {
-    id: string;
-    rechnungsnummer: string;
-    erstellungsDatum: string;
-    rechnungsSteller: Business;
-    rechnungsEmpfaenger: Business;
-    gesamtBetrag: number;
 };
 
 type Props = {
@@ -50,6 +42,9 @@ export default function App({primaryBusiness, invoices}: Props) {
                     </Button>,
                     <Button asChild variant="secondary" size="lg">
                         <Link href="/Rechnungen/Create">Create Rechnung</Link>
+                    </Button>,
+                    <Button asChild variant="secondary" size="lg">
+                        <Link href="/Payments/Create">Create Payment</Link>
                     </Button>
                 ]
             }

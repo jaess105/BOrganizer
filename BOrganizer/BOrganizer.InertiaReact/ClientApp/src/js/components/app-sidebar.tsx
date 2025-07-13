@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/sidebar';
 import {type NavItem} from '@/types';
 import {Link} from '@inertiajs/react';
-import {BookOpen, Folder, LayoutGrid, Building, Newspaper} from 'lucide-react';
+import {BookOpen, Folder, LayoutGrid, Building, Newspaper, HandCoins} from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -30,6 +30,11 @@ const mainNavItems: NavItem[] = [
         title: 'Rechnungen',
         href: '/Rechnungen',
         icon: Newspaper,
+    },
+    {
+        title: 'Payments',
+        href: '/Payments',
+        icon: HandCoins,
     }
 ];
 
