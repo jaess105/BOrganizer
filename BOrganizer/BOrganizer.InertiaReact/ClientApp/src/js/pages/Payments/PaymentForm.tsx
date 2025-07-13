@@ -17,10 +17,12 @@ import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 import {cn} from "@/lib/utils"; // assuming utility exists
 import {Check} from "lucide-react";
 import axios from "axios";
+import {RechnungsNummer, RechnungsNummerToString} from "@/types/busines";
 
 
 interface Props extends PageProps {
     payment?: PaymentDto | null;
+    rechnungsNummer?: RechnungsNummer;
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -28,11 +30,11 @@ const breadcrumbs: BreadcrumbItem[] = [
     {title: 'Create Payment', href: '/Payments/Create'},
 ];
 
-export default function CreatePaymentPage({payment}: Props) {
+export default function CreatePaymentPage({payment, rechnungsNummer}: Props) {
     const [showSuccessModal, setShowSuccessModal] = useState(false);
 
     const {data, setData, post, processing, errors} = useForm({
-        id: payment?.paymentId,
+        paymentId: payment?.paymentId,
         date: payment?.date ?? format(new Date(), 'yyyy-MM-dd'),
         netto: payment?.netto ?? 0,
         mwstPercent: payment?.mwstPercent ?? 19,
@@ -85,14 +87,23 @@ export default function CreatePaymentPage({payment}: Props) {
 
 
     const [searchOpen, setSearchOpen] = useState(false);
-    const [invoiceOptions, setInvoiceOptions] = useState<{ id: number, label: string }[]>([]);
+    const [invoiceOptions, setInvoiceOptions] = useState(
+        rechnungsNummer == undefined ? [] : [{
+            id: rechnungsNummer?.id!,
+            label: RechnungsNummerToString(rechnungsNummer!),
+        }]);
+
+
     const handleSearch = async (query: string) => {
         if (!query) return;
 
-        const res = await axios.get('/Api/Rechnung/Search', {params: {q: query}});
+        const res = await axios.get('/Api/RechnungsNummer/Search', {
+            params: {
+                query: query, currentId: data.rechnungId
+            }
+        });
         setInvoiceOptions(res.data);
     };
-
 
     return (
         <AppLayout breadcrumbs={breadcrumbs} heading="Create Payment">
