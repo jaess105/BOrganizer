@@ -46,7 +46,18 @@ public record Invoice(
 )
 {
     public required long? Id { get; init; }
-    public decimal GesamtBetrag => Items.Sum(i => i.Rechnungsbetrag);
+
+    /// <summary>
+    /// Nach Abzug bzw. ohne den MwSt Aufschlag.
+    /// </summary>
+    public decimal GesamtNetto
+        => Items.Sum(i => i.Rechnungsbetrag);
+
+    /// <summary>
+    /// Vor Abzug bzw. mit MwSt Aufschlag.
+    /// </summary>
+    public decimal GesamtBrutto
+        => Items.Sum(i => i.Rechnungsbetrag + i.Rechnungsbetrag * SteuerAusweisung.InProzent);
 
     /// <param name="Beschreibung">
     /// Der Umfang der bestellten Produkte oder erbrachten Leistungen Leistungs- oder Lieferzeitpunkt

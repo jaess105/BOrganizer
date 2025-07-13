@@ -40,7 +40,7 @@
                             <p class="mb-1"><strong>Am:</strong> @invoice.ErstellungsDatum.ToString("dd.MM.yyyy")</p>
                             <p class="mb-1"><strong>Steller:</strong> @invoice.RechnungsSteller.Name</p>
                             <p class="mb-1"><strong>Empfänger:</strong> @invoice.RechnungsEmpfaenger.Name</p>
-                            <p class="mb-1 mt-auto"><strong>Summe:</strong> @invoice.GesamtBetrag.ToString("C")</p>
+                            <p class="mb-1 mt-auto"><strong>Summe:</strong> @invoice.GesamtBrutto.ToString("C")</p>
                             <a asp-page="/Rechnungen/RechnungCreation" asp-route-InvoiceId="@invoice.Id">
                                 Edit
                             </a>
