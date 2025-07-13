@@ -3,7 +3,7 @@ import type {BreadcrumbItem} from '@/types';
 import {Invoice} from "@/types/busines";
 import AppLayout from '@/layouts/app-layout';
 import {Button} from '@/components/ui/button';
-import InvoiceGrid from './Rechnungen/InvoiceGrid';
+import {InvoiceGrid} from './Rechnungen/InvoiceGrid';
 
 type Business = {
     name: string;
@@ -49,7 +49,7 @@ export default function App({primaryBusiness, invoices}: Props) {
                 ]
             }
         >
-            <h2 className="text-2xl font-bold text-primary">Your Invoices</h2>
+            <h2 className="text-2xl font-bold text-primary">Unpaid Invoices</h2>
             <InvoiceGrid invoices={invoices}/>
         </AppLayout>
     );
