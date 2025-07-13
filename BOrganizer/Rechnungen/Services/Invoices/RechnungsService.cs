@@ -1,5 +1,7 @@
 using Rechnungen.Model.General;
 using Rechnungen.Model.Invoices;
+using Rechnungen.Model.Payments;
+using Rechnungen.Services.Payments;
 
 namespace Rechnungen.Services.Invoices;
 
@@ -36,6 +38,7 @@ public interface IInvoiceRepository
 
     Task<bool> ExistsAsync(long invoiceId);
     Task<IEnumerable<Invoice>> GetAllAsync();
+    Task<IEnumerable<Invoice>> GetAllUnpayedAsync();
 }
 
 public interface IRechnungsService
@@ -59,17 +62,21 @@ public interface IRechnungsService
 
     Task<bool> InvoiceExistsAsync(long invoiceId);
     Task<IEnumerable<Invoice>> GetInvoicesAsync();
+    Task<IEnumerable<Invoice>> GetUnpayedInvoicesAsync();
 
     Task<Credit> UpdateCreditAsync(long id, string institute, string iban, string bic,
         string inhaber);
 
     Task<IEnumerable<RechnungsNummer>> SearchRechnungsNummernAsync(string s);
+    Task<(IEnumerable<Invoice> invoices, Dictionary<long, Payment> payments)> GetInvoicesWithPaymentsAsync();
+    Task<RechnungsNummer?> GetRechnungsNummerByIdAsync(long currentId);
 }
 
 public class RechnungsService(
     IRechnungsNummerRepository rechnungsRepo,
     ICreditRepository creditRepo,
-    IInvoiceRepository invoiceRepo) : IRechnungsService
+    IInvoiceRepository invoiceRepo,
+    IPaymentRepository paymentRepo) : IRechnungsService
 {
     public async Task<RechnungsNummer> NextRechnungsNummer(string kuerzel, string jahr)
     {
@@ -101,6 +108,11 @@ public class RechnungsService(
 
     public Task<Credit?> GetCreditByIdAsync(long creditId) => creditRepo.GetByIdAsync(creditId);
 
+    public Task<IEnumerable<Invoice>> GetUnpayedInvoicesAsync()
+    {
+        return invoiceRepo.GetAllUnpayedAsync();
+    }
+
     public Task<Credit> UpdateCreditAsync(long id, string institute, string iban, string bic, string inhaber)
     {
         return creditRepo.UpdateAsync(id, institute, iban, bic, inhaber);
@@ -109,6 +121,21 @@ public class RechnungsService(
     public Task<IEnumerable<RechnungsNummer>> SearchRechnungsNummernAsync(string s)
     {
         return rechnungsRepo.SearchByNummerAsync(s);
+    }
+
+    public async Task<(IEnumerable<Invoice> invoices, Dictionary<long, Payment> payments)>
+        GetInvoicesWithPaymentsAsync()
+    {
+        IEnumerable<Invoice> invoices = await invoiceRepo.GetAllAsync();
+        invoices = invoices as Invoice[] ?? invoices.ToArray();
+        Dictionary<long, Payment> payments = await paymentRepo.GetByInvoiceIdsAsync(invoices.Select(i => i.Id!.Value));
+
+        return (invoices, payments);
+    }
+
+    public Task<RechnungsNummer?> GetRechnungsNummerByIdAsync(long currentId)
+    {
+        return rechnungsRepo.GetByIdAsync(currentId);
     }
 
     public Task<Invoice> CreateInvoiceAsync(Invoice invoice)
