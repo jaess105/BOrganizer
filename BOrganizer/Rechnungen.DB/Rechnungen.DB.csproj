@@ -6,6 +6,7 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
     <ItemGroup>
+        <ProjectReference Include="..\..\ExtensionsSln\Extensions.Core\Extensions.Core.csproj" />
         <ProjectReference Include="..\DB.Core\DB.Core.csproj"/>
         <ProjectReference Include="..\Rechnungen\Rechnungen.csproj"/>
     </ItemGroup>
