@@ -87,7 +87,7 @@ public class InvoiceDao(
         await _repoItem.InsertAllAsync(invoiceItems.Select(i => i.ToDto(invoiceId)));
 
         RechnungsNummer? rechnungsNummer = await rechnungsNummerRepo.GetByIdAsync(dto.rechnungsnummer_id);
-        
+
         return dto.ToDomain(
             rechnungsSteller,
             rechnungsEmpfaenger,
@@ -104,10 +104,37 @@ public class InvoiceDao(
 
     public async Task<IEnumerable<Invoice>> GetAllAsync()
     {
+        IEnumerable<InvoiceDto> invoices = await _repo.QueryAllAsync();
+        return await ToFullInvoice(invoices.ToArray());
+    }
+
+    public async Task<IEnumerable<Invoice>> GetAllUnpayedAsync()
+    {
         using IDbConnection con = connectionFactory.CreateOpenConnection();
 
-        IEnumerable<InvoiceDto> invoices = await _repo.QueryAllAsync();
+        IEnumerable<InvoiceDto> invoices =
+            await Dapper.SqlMapper.QueryAsync<InvoiceDto>(
+                con,
+                """
+                SELECT i.* FROM invoices i
+                WHERE i.rechnungsnummer_id NOT IN (
+                    SELECT p.rechnung_id 
+                    FROM payments p
+                    WHERE p.rechnung_id IS NOT NULL
+                );
+                """);
 
+        return await ToFullInvoice(invoices.ToArray(), con);
+    }
+
+    private Task<IEnumerable<Invoice>> ToFullInvoice(IEnumerable<InvoiceDto> invoices)
+    {
+        using IDbConnection con = connectionFactory.CreateOpenConnection();
+        return ToFullInvoice(invoices, con);
+    }
+
+    private async Task<IEnumerable<Invoice>> ToFullInvoice(IEnumerable<InvoiceDto> invoices, IDbConnection con)
+    {
         (HashSet<long> businessIds, HashSet<long> creditIds, HashSet<long> rechnungsNummerIds) = invoices.Aggregate(
             (new HashSet<long>(), new HashSet<long>(), new HashSet<long>()),
             (agg, i) =>
