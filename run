@@ -1,0 +1,45 @@
+#!/bin/bash
+
+APP_PATH="BOrganizer"
+CLIENT_PATH="$APP_PATH/BOrganizer.InertiaReact/ClientApp"
+IDE="rider"
+
+tab() {
+    local cmd="$1"
+    local title="${2:-}"
+
+    if [ -z "$title" ]; then
+        # No title provided — just open tab and run command
+        gnome-terminal --tab -- bash -c "$cmd; exec bash"
+    else
+        # Title provided — name the tab
+        gnome-terminal --tab --title="$title" -- bash -c "$cmd; exec bash"
+    fi
+}
+
+
+dev() {
+    echo "Running in dev mode..."
+    tab "docker compose up db" "db"
+    tab "cd $CLIENT_PATH && npm run dev" "ClientApp"
+    tab "cd $APP_PATH && $IDE ." "$IDE"
+}
+
+compose() {
+    echo "Running docker-compose..."
+    docker-compose up --build
+}
+
+# Help function
+help() {
+    echo "Usage: $0 {dev|compose}"
+    exit 1
+}
+
+# Main dispatcher
+case "$1" in
+    dev) dev ;;
+    compose) compose ;;
+    *) help ;;
+esac
+
