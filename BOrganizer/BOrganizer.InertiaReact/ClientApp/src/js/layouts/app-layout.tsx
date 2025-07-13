@@ -1,9 +1,7 @@
 import AppLayoutTemplate from '@/layouts/app/app-sidebar-layout';
 import {type BreadcrumbItem} from '@/types';
 import {type ReactNode} from 'react';
-import {Head, Link} from "@inertiajs/react";
-import {Button} from "@/components/ui/button";
-import InvoiceGrid from "@/pages/Rechnungen/InvoiceGrid";
+import {Head} from "@inertiajs/react";
 
 interface AppLayoutProps {
     heading: string;
