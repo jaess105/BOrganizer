@@ -1,5 +1,5 @@
 import {Head, router, useForm} from '@inertiajs/react';
-import {PageProps} from '@/types';
+import {type BreadcrumbItem, PageProps} from '@/types';
 import {
     Card,
     CardContent,
@@ -13,6 +13,21 @@ import {Button} from '@/components/ui/button';
 import AppLayout from "@/layouts/app-layout";
 import {Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle} from "@/components/ui/dialog";
 import {useState} from "react";
+
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Businesses',
+        href: '/Businesses',
+    },
+    {
+        title: 'Create Business',
+        href: '/Businesses/Create',
+    },
+    {
+        title: 'Create Credit',
+        href: '/Businesses/Credit/Create',
+    },
+];
 
 export default function CreditForm({}: PageProps) {
     const {data, setData, post, errors, processing} = useForm({
@@ -33,9 +48,11 @@ export default function CreditForm({}: PageProps) {
         }); // Match your controller route
     };
 
+    const heading = "Kreditverbindung erstellen";
     return (
-        <AppLayout>
-            <Head title="Kreditverbindung erstellen"/>
+        <AppLayout breadcrumbs={breadcrumbs}
+                   heading={heading}>
+            <Head title={heading}/>
 
             <div className="max-w-xl p-6">
                 <Card>
