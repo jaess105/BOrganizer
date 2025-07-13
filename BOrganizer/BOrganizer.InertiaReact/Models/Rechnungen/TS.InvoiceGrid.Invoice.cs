@@ -5,7 +5,7 @@ namespace BOrganizer.Inertia.Models.Rechnungen;
 public class TsInvoiceGridInvoice
 {
     public string Id { get; set; }
-    public string Rechnungsnummer { get; set; }
+    public RechnungsNummer Rechnungsnummer { get; set; }
     public string ErstellungsDatum { get; set; }
     public TsBusiness RechnungsSteller { get; set; }
     public TsBusiness RechnungsEmpfaenger { get; set; }
@@ -16,8 +16,8 @@ public class TsInvoiceGridInvoice
     {
         return new()
         {
-            Id = invoice.Id.ToString(),
-            Rechnungsnummer = invoice.Rechnungsnummer.ToString(),
+            Id = invoice.Id!.ToString(),
+            Rechnungsnummer = invoice.Rechnungsnummer,
             ErstellungsDatum = invoice.ErstellungsDatum.ToString("o"), // ISO 8601
             RechnungsSteller = new TsBusiness { Name = invoice.RechnungsSteller.Name },
             RechnungsEmpfaenger = new TsBusiness { Name = invoice.RechnungsEmpfaenger.Name },
