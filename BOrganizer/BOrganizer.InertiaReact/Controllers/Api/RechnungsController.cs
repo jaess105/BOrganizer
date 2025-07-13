@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Rechnungen;
-using Rechnungen.Model.Invoices;
 using Rechnungen.Services.Invoices;
 
 namespace BOrganizer.InertiaRact.Controllers.Api;
@@ -28,20 +27,5 @@ public class RechnungsController(
         string disposition = download ? "attachment" : "inline";
         Response.Headers.Append("Content-Disposition", $"{disposition}; filename={pdfName}");
         return File(invoicePdfStream, "application/pdf");
-    }
-
-
-    [HttpGet("Search")]
-    public async Task<IActionResult> Search(string query)
-    {
-        if (string.IsNullOrWhiteSpace(query)) { return Ok(new List<object>()); }
-
-        IEnumerable<RechnungsNummer> rechnungsNummern = await rechnungsService.SearchRechnungsNummernAsync(query);
-
-        return Ok(rechnungsNummern.Select(rn => new
-        {
-            rn.Id,
-            label = rn.ToString(),
-        }));
     }
 }
