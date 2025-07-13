@@ -11,11 +11,11 @@ export interface Business {
     steuernummer?: string;
 }
 
-interface RechnungsNummer {
-    Id?: number | null;
-    Kuerzel: string;
-    Jahr: string;
-    Nummer: string;
+export interface RechnungsNummer {
+    id?: number | null;
+    kuerzel: string;
+    jahr: string;
+    nummer: string;
 
     toString(): string;
 }
