@@ -11,6 +11,7 @@ public interface IPaymentRepository
     Task<Payment?> GetByIdAsync(long id);
     Task DeleteAsync(long id);
     Task<Payment?> GetByInvoiceIdAsync(long invoiceId);
+    Task<Dictionary<long, Payment>> GetByInvoiceIdsAsync(IEnumerable<long> invoiceIds);
 }
 
 public interface IPaymentService

@@ -54,6 +54,24 @@ public class PaymentDao(
             p => p.rechnung_id == invoiceId,
             top: 1)).FirstOrDefault()?.ToModel();
     }
+
+    public async Task<Dictionary<long, Payment>> GetByInvoiceIdsAsync(IEnumerable<long> invoiceIds)
+    {
+        long[] invoiceIdsArray = invoiceIds.ToArray();
+
+        using IDbConnection conn = connectionFactory.CreateOpenConnection();
+        IEnumerable<PaymentDto> paymentDtos = await Dapper.SqlMapper.QueryAsync<PaymentDto>(
+            conn,
+            """
+            SELECT p.*
+            FROM payments p
+            WHERE p.rechnung_id IS NOT NULL 
+                AND p.rechnung_id = ANY(@invoiceIdsArray)
+            """,
+            new { invoiceIdsArray });
+
+        return paymentDtos.ToDictionary(p => p.rechnung_id!.Value, p => p.ToModel());
+    }
 }
 
 [Table("payments")]
