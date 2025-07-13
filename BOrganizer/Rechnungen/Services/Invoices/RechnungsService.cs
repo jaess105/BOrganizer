@@ -8,6 +8,7 @@ public interface IRechnungsNummerRepository
     Task<string> GetHighestNumberAsync(string kuerzel, string jahr);
     Task<RechnungsNummer> SaveWithMaxConstraintAsync(RechnungsNummer newRechnungsnummer);
     Task<RechnungsNummer?> GetByIdAsync(long rechnungsnummerId);
+    Task<IEnumerable<RechnungsNummer>> SearchByNummerAsync(string query);
 }
 
 public interface ICreditRepository
@@ -61,6 +62,8 @@ public interface IRechnungsService
 
     Task<Credit> UpdateCreditAsync(long id, string institute, string iban, string bic,
         string inhaber);
+
+    Task<IEnumerable<RechnungsNummer>> SearchRechnungsNummernAsync(string s);
 }
 
 public class RechnungsService(
@@ -101,6 +104,11 @@ public class RechnungsService(
     public Task<Credit> UpdateCreditAsync(long id, string institute, string iban, string bic, string inhaber)
     {
         return creditRepo.UpdateAsync(id, institute, iban, bic, inhaber);
+    }
+
+    public Task<IEnumerable<RechnungsNummer>> SearchRechnungsNummernAsync(string s)
+    {
+        return rechnungsRepo.SearchByNummerAsync(s);
     }
 
     public Task<Invoice> CreateInvoiceAsync(Invoice invoice)

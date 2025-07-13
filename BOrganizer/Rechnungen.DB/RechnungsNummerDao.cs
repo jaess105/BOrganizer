@@ -66,6 +66,26 @@ public class RechnungsNummerDao(
     public async Task<RechnungsNummer?> GetByIdAsync(long rechnungsnummerId)
         => (await _repo.QueryAsync(rechnungsnummerId))?.FirstOrDefault()?.ToDomain();
 
+    public async Task<IEnumerable<RechnungsNummer>> SearchByNummerAsync(string query)
+    {
+        const string sql = @"
+            SELECT * 
+            FROM rechnungsnummer
+            WHERE LOWER(kuerzel) LIKE @pattern OR 
+                  LOWER(year) LIKE @pattern OR 
+                  LOWER(number) LIKE @pattern
+            ORDER BY id DESC
+            OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY";
+
+        using IDbConnection _connection = connectionFactory.CreateOpenConnection();
+        var param = new { pattern = $"%{query.ToLower()}%" };
+
+        return (await Dapper.SqlMapper.QueryAsync<RechnungsNummerDto>(
+            _connection,
+            sql,
+            param)).Select(x => x.ToDomain());
+    }
+
 
     private async Task<RechnungsNummerDto?> GetHighestDto(
         IDbConnection connection, string kuerzel, string jahr, IDbTransaction? transaction = null)
