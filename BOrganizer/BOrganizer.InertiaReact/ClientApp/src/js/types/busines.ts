@@ -20,6 +20,11 @@ export interface RechnungsNummer {
     toString(): string;
 }
 
+export function RechnungsNummerToString(rn: RechnungsNummer): string {
+    return `${rn.kuerzel}-${rn.jahr}-${rn.nummer}`;
+}
+
+
 enum InvoiceSteuersatzId {
     Standard = 1,
     Ermaessigt = 2,
