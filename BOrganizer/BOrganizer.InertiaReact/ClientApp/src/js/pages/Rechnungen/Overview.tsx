@@ -3,10 +3,12 @@ import {type BreadcrumbItem, PageProps} from '@/types';
 import {Button} from '@/components/ui/button';
 import AppLayout from "@/layouts/app-layout";
 import {Invoice} from "@/types/busines";
-import InvoiceGrid from './InvoiceGrid';
+import {InvoiceGrid} from './InvoiceGrid';
+import {Payment} from "@/types/payment";
 
 interface Props extends PageProps {
-    invoices: Invoice[]
+    invoices: Invoice[],
+    payments?: Record<number, Payment>,
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -16,7 +18,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function RechnungenOverview({invoices}: Props) {
+export default function RechnungenOverview({invoices, payments}: Props) {
     return (
         <AppLayout
             breadcrumbs={breadcrumbs}
@@ -28,7 +30,7 @@ export default function RechnungenOverview({invoices}: Props) {
             ]}
         >
             <Head title="Rechnungen"/>
-            <InvoiceGrid invoices={invoices}/>
+            <InvoiceGrid invoices={invoices} payments={payments} />
         </AppLayout>
     );
 }
