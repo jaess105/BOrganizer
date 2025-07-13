@@ -10,7 +10,7 @@ public class TsInvoiceGridInvoice
     public TsBusiness RechnungsSteller { get; set; }
     public TsBusiness RechnungsEmpfaenger { get; set; }
     public decimal GesamtBetrag { get; set; }
-    
+
 
     public static TsInvoiceGridInvoice FromInvoice(Invoice invoice)
     {
@@ -21,7 +21,7 @@ public class TsInvoiceGridInvoice
             ErstellungsDatum = invoice.ErstellungsDatum.ToString("o"), // ISO 8601
             RechnungsSteller = new TsBusiness { Name = invoice.RechnungsSteller.Name },
             RechnungsEmpfaenger = new TsBusiness { Name = invoice.RechnungsEmpfaenger.Name },
-            GesamtBetrag = invoice.GesamtBetrag
+            GesamtBetrag = invoice.GesamtBrutto
         };
     }
 }
